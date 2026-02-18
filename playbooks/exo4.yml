@@ -1,0 +1,24 @@
+---
+- name: Exo4 ;Construire des images Docker pour l'application Flask
+  hosts: serveurs
+  become: yes  
+
+  vars:
+    chemin_du_projet: "/home/codespace/IVC_ansible_clone"
+
+  tasks:
+    - name: Créer l'image Docker pour l'application Flask
+      community.docker.docker_image:
+        name: flask_app_image
+        build:
+          path: "{{ chemin_du_projet }}/app"  # Emplacement du Dockerfile (Exo 3)
+        source: build
+        state: present
+
+    - name: Vérifier la création de l'image Docker
+      ansible.builtin.shell: docker images | grep flask_app_image
+      register: resultat_docker
+
+    - name: Afficher le résultat de la commande Docker
+      ansible.builtin.debug:
+        var: resultat_docker.stdout

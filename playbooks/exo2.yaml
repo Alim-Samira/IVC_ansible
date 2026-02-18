@@ -1,0 +1,20 @@
+---
+- name: Cloner ou mettre à jour un dépôt Git
+  hosts: serveurs
+  vars_prompt:
+    - name: repo_url
+      prompt: "Veuillez fournir l'URL du dépôt à cloner :"
+      default: "https://github.com/Alim-Samira/IVC_ansible.git" 
+      private: no
+
+  vars:
+    destination: "/home/codespace/IVC_ansible_clone"
+
+  tasks:
+    - name: Cloner le dépôt ou le mettre à jour si nécessaire
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ destination }}"
+        version: main
+        force: yes
+        update: yes

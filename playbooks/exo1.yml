@@ -1,0 +1,29 @@
+---
+- name: Exo 1 - Config de Git
+  hosts: serveurs
+  vars_prompt:
+    - name: github_user
+      prompt: "Entrez votre nom d'utilisateur GitHub"
+      private: no
+    - name: github_token
+      prompt: "Entrez votre token GitHub (PAT)"
+      private: yes
+
+  tasks:
+    - name: Configurer le nom d'utilisateur Git
+      community.general.git_config:
+        name: user.name
+        value: "{{ github_user }}"
+        scope: global
+
+    - name: Configurer le credential helper
+      community.general.git_config:
+        name: credential.helper
+        value: store
+        scope: global
+
+    - name: Générer le fichier .git-credentials à partir du template
+      ansible.builtin.template:
+        src: templates/git-credentials.j2
+        dest: "~/.git-credentials"
+        mode: '0600'
