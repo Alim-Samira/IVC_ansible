@@ -11,7 +11,7 @@
       community.docker.docker_image:
         name: flask_app_image
         build:
-          path: "{{ chemin_du_projet }}/app"  # Emplacement du Dockerfile (Exo 3)
+          path: "{{ chemin_du_projet }}/app"  
         source: build
         state: present
 

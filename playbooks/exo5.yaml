@@ -1,0 +1,31 @@
+---
+- name: Exo 5 - Lancer l'application multi-conteneurs
+  hosts: serveurs
+  become: yes
+
+  tasks:
+    - name: Créer le réseau Docker pour l'application
+      community.docker.docker_network:
+        name: app_network
+        state: present
+
+    - name: Lancer le conteneur de la Base de Données (MySQL)
+      community.docker.docker_container:
+        name: db_container
+        image: mysql:8.0
+        networks:
+          - name: app_network
+        env:
+          MYSQL_ROOT_PASSWORD: "password"
+          MYSQL_DATABASE: "appdb"
+        state: started
+
+    - name: Lancer le conteneur de l'Application (Flask)
+      community.docker.docker_container:
+        name: flask_container
+        image: flask_app_image 
+        networks:
+          - name: app_network
+        ports:
+          - "8080:5000" 
+        state: started
