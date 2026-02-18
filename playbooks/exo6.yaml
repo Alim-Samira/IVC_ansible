@@ -1,0 +1,26 @@
+---
+- name: Exo 6 - Persistance et Backup
+  hosts: serveurs
+  become: yes
+  tasks:
+  
+    - name: Recréer le conteneur DB avec un volume
+      community.docker.docker_container:
+        name: db_container
+        image: mysql:8.0
+        volumes:
+          - db_data:/var/lib/mysql 
+        state: started
+
+    
+    - name: Créer le dossier /backup
+      ansible.builtin.file:
+        path: /backup
+        state: directory
+        mode: '0755'
+
+    - name: Sauvegarde de la base de données chaque heure
+      ansible.builtin.cron:
+        name: "Backup MySQL"
+        minute: "0" 
+        job: "docker exec db_container mysqldump -u root -ppassword appdb > /backup/backup_$(date +%Y%m%d%H).sql"
